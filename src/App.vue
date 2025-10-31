@@ -1,28 +1,29 @@
 <template>
   <div class="chuseok-page">
-    <!-- 🌕 배경 보름달 및 흘러가는 메시지 -->
     <div class="background">
       <div class="moon"></div>
       <div class="floating-messages">
         <span
             v-for="(msg, index) in messages"
             :key="index"
-            :style="{ animationDelay: `${index * 3}s` }"
             class="floating-text"
+            :style="{
+            top: `${randomHeights[index]}%`,
+            color: getTextColor(randomHeights[index]),
+            animationDelay: `${index * 3}s`
+          }"
         >
           {{ msg }}
         </span>
       </div>
     </div>
 
-    <!-- ✅ 메인 카피 -->
     <header class="hero">
       <h1>🌕 한가위, 마음을 나누는 날 🌾</h1>
       <p>풍요로운 달빛 아래에서 함께하는 따뜻한 이야기</p>
     </header>
 
     <main>
-      <!-- ✅ 추석 소개 -->
       <section class="intro">
         <h2>추석이란?</h2>
         <p>
@@ -31,7 +32,6 @@
         </p>
       </section>
 
-      <!-- ✅ 유래 -->
       <section class="origin">
         <h2>추석의 유래</h2>
         <p>
@@ -41,7 +41,6 @@
         </p>
       </section>
 
-      <!-- ✅ 전통 음식 -->
       <section class="foods">
         <h2>전통 음식</h2>
         <ul>
@@ -51,7 +50,6 @@
         </ul>
       </section>
 
-      <!-- ✅ 전통 놀이 -->
       <section class="games">
         <h2>전통 놀이</h2>
         <ul>
@@ -60,7 +58,6 @@
         </ul>
       </section>
 
-      <!-- ✅ 방명록 -->
       <section class="guestbook">
         <h2>🌾 한가위 방명록</h2>
         <form @submit.prevent="addMessage">
@@ -83,27 +80,42 @@
 </template>
 
 <script lang="ts" setup>
-// ✅ Vue 3 Composition API + TypeScript
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 
 const messages = ref<string[]>([
   '보름달처럼 밝은 한가위 되세요 🌕',
   '가족과 함께 즐거운 명절 보내세요 🎑',
   '풍성한 마음으로 행복을 나누세요 🍂',
+  '멀리 있어도 마음은 함께 🌾',
+  '건강하고 따뜻한 추석 보내세요 💛',
 ])
 
 const newMessage = ref('')
+const randomHeights = ref<number[]>([])
+
+onMounted(() => {
+  randomHeights.value = messages.value.map(() =>
+      Math.floor(Math.random() * 70) + 10
+  )
+})
+
+function getTextColor(topPercent: number) {
+  if (topPercent < 40 && topPercent > 10) {
+    return '#f0e5a2'
+  }
+  return '#ffffffb3'
+}
 
 function addMessage() {
   if (newMessage.value.trim()) {
     messages.value.push(newMessage.value.trim())
+    randomHeights.value.push(Math.floor(Math.random() * 70) + 10)
     newMessage.value = ''
   }
 }
 </script>
 
 <style scoped>
-/* 🌙 전체 배경 */
 .chuseok-page {
   font-family: 'Pretendard', sans-serif;
   color: #f5f5f5;
@@ -113,7 +125,6 @@ function addMessage() {
   position: relative;
 }
 
-/* 🌕 보름달 */
 .moon {
   position: absolute;
   top: 80px;
@@ -137,7 +148,6 @@ function addMessage() {
   }
 }
 
-/* ✨ 흘러가는 메시지 */
 .floating-messages {
   position: absolute;
   top: 0;
@@ -150,24 +160,28 @@ function addMessage() {
 
 .floating-text {
   position: absolute;
-  top: calc(10% + 80px * var(--i));
   left: 100%;
-  font-size: 1rem;
-  color: rgba(255, 255, 255, 0.8);
   white-space: nowrap;
-  animation: floatText 20s linear infinite;
+  font-size: 1rem;
+  font-weight: 500;
+  text-shadow: 0 0 6px rgba(0, 0, 0, 0.6);
+  animation: floatText 22s linear infinite;
+  pointer-events: none;
+  opacity: 0.9;
 }
 
 @keyframes floatText {
-  from {
-    transform: translateX(100%);
+  0% {
+    transform: translateX(100%) translateY(0);
   }
-  to {
-    transform: translateX(-120%);
+  50% {
+    transform: translateX(0%) translateY(3px);
+  }
+  100% {
+    transform: translateX(-120%) translateY(0);
   }
 }
 
-/* 🏮 메인 */
 .hero {
   text-align: center;
   padding: 120px 20px 60px;
@@ -183,7 +197,6 @@ function addMessage() {
   color: #ffda8b;
 }
 
-/* 📜 콘텐츠 섹션 */
 section {
   max-width: 800px;
   margin: 60px auto;
@@ -210,7 +223,6 @@ li {
   margin-bottom: 10px;
 }
 
-/* 💌 방명록 */
 .guestbook form {
   display: flex;
   gap: 8px;
@@ -238,7 +250,6 @@ li {
   background: #ffecb3;
 }
 
-/* 🩶 푸터 */
 footer {
   text-align: center;
   margin: 60px 0;
