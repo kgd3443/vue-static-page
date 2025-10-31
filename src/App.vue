@@ -1,80 +1,83 @@
 <template>
-  <div class="chuseok-page">
+  <div class="page">
+    <!-- ✅ ① 보름달 배경 -->
     <div class="background">
       <div class="moon"></div>
+
+      <!-- ✅ ② 흘러가는 방명록 메시지 -->
       <div class="floating-messages">
         <span
-            v-for="(msg, index) in messages"
-            :key="index"
-            class="floating-text"
-            :style="{
-            top: `${randomHeights[index]}%`,
-            color: getTextColor(randomHeights[index]),
-            animationDelay: `${index * 3}s`
-          }"
+            v-for="(msg, i) in messages"
+            :key="i"
+            class="floating"
+            :style="{ top: `${positions[i]}%`, animationDelay: `${i * 2}s` }"
         >
           {{ msg }}
         </span>
       </div>
     </div>
 
+    <!-- ✅ ③ 메인 카피 -->
     <header class="hero">
-      <h1>🌕 한가위, 마음을 나누는 날 🌾</h1>
-      <p>풍요로운 달빛 아래에서 함께하는 따뜻한 이야기</p>
+      <h1>🌕 한가위, 풍요와 나눔의 명절 🌾</h1>
+      <p>달빛이 가장 아름다운 날, 마음까지 둥글게 나누는 시간</p>
     </header>
 
     <main>
-      <section class="intro">
-        <h2>추석이란?</h2>
+      <!-- ✅ ④ 추석 소개 -->
+      <section>
+        <h2>추석이란 무엇일까?</h2>
         <p>
-          추석은 음력 8월 15일, 한 해의 수확을 감사하고 조상에게 예를 올리는 한국의 대표 명절입니다.
-          가족이 모여 송편을 빚고, 조상께 차례를 올리며, 이웃과 정을 나누는 날이지요.
+          추석은 음력 8월 15일, 한 해의 수확에 감사하고 조상에게 예를 올리는 한국의 대표 명절입니다.
+          한가위라고도 하며, 가족이 모여 송편을 빚고 서로의 안부를 전하는 따뜻한 날입니다.
         </p>
       </section>
 
-      <section class="origin">
+      <!-- ✅ ⑤ 유래 -->
+      <section>
         <h2>추석의 유래</h2>
         <p>
-          추석은 신라 시대의 ‘가배(嘉俳)’ 풍습에서 유래했습니다.
-          두 편으로 나누어 한 달 동안 길쌈을 하고, 승패에 따라 잔치를 벌였던 풍습이
-          오늘날의 수확 감사 절기로 발전한 것이지요.
+          추석의 기원은 신라시대 ‘가배(嘉俳)’ 풍습에서 비롯되었습니다.
+          두 편으로 나뉘어 한 달 동안 길쌈을 겨루고, 이긴 쪽이 잔치를 벌였다고 전해집니다.
+          이후 농경 사회의 풍요로운 수확 시기와 결합되어 오늘날의 추석으로 이어졌습니다.
         </p>
       </section>
 
-      <section class="foods">
+      <!-- ✅ ⑥ 전통 음식 -->
+      <section>
         <h2>전통 음식</h2>
         <ul>
-          <li><strong>송편</strong> — 햇곡으로 빚은 반달 모양 떡. 가족의 소원을 담습니다.</li>
-          <li><strong>육전</strong> — 얇게 썬 고기에 달걀옷을 입혀 지진 명절 대표 음식.</li>
-          <li><strong>잡채</strong> — 여러 채소와 당면을 함께 볶은 화합의 음식.</li>
+          <li><strong>송편</strong> — 햇곡으로 만든 반달 모양의 떡으로, 가족의 소원을 담습니다.</li>
+          <li><strong>육전</strong> — 고기를 얇게 썰어 달걀옷을 입혀 부친 음식으로 명절의 별미입니다.</li>
+          <li><strong>잡채</strong> — 여러 재료를 어우러지게 볶아낸 음식으로 풍요로움을 상징합니다.</li>
         </ul>
       </section>
 
-      <section class="games">
+      <!-- ✅ ⑦ 전통 놀이 -->
+      <section>
         <h2>전통 놀이</h2>
         <ul>
-          <li><strong>쥐불놀이</strong> — 불을 돌리며 풍년을 기원하는 명절 놀이.</li>
-          <li><strong>제기차기</strong> — 제기를 높이 차 올리며 즐기는 운동 겸 놀이.</li>
+          <li><strong>쥐불놀이</strong> — 들판의 해충을 없애며 풍년을 기원하는 불놀이.</li>
+          <li><strong>제기차기</strong> — 제기를 발로 차서 오래 띄우며 즐기는 운동 겸 놀이.</li>
         </ul>
       </section>
 
+      <!-- ✅ ⑧ 방명록 -->
       <section class="guestbook">
         <h2>🌾 한가위 방명록</h2>
         <form @submit.prevent="addMessage">
           <input v-model="newMessage" placeholder="추석 인사를 남겨주세요!" required />
-          <button type="submit">남기기</button>
+          <button>남기기</button>
         </form>
-
-        <ul class="guest-list">
-          <li v-for="(msg, idx) in messages" :key="idx">
-            {{ msg }}
-          </li>
+        <ul>
+          <li v-for="(msg, i) in messages" :key="i">{{ msg }}</li>
         </ul>
       </section>
     </main>
 
+    <!-- ✅ ⑨ 푸터 -->
     <footer>
-      <p>© 2025 한가위의 마음 | 풍요로운 추석 되세요 🌕</p>
+      <p>© 2025 풍요로운 한가위 | 보름달처럼 밝은 하루 되세요 🌕</p>
     </footer>
   </div>
 </template>
@@ -82,162 +85,133 @@
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue'
 
+// ✅ 방명록 메시지 리스트
 const messages = ref<string[]>([
-  '보름달처럼 밝은 한가위 되세요 🌕',
-  '가족과 함께 즐거운 명절 보내세요 🎑',
-  '풍성한 마음으로 행복을 나누세요 🍂',
-  '멀리 있어도 마음은 함께 🌾',
-  '건강하고 따뜻한 추석 보내세요 💛',
+  '🌕 행복이 가득한 추석 보내세요!',
+  '🍂 가족과 함께 따뜻한 시간 보내세요!',
+  '🎑 풍요로운 보름달처럼 마음도 가득 채우세요!',
 ])
 
+// ✅ 새로운 메시지 입력
 const newMessage = ref('')
-const randomHeights = ref<number[]>([])
 
+// ✅ 각 메시지의 랜덤 높이 위치 (겹치지 않게)
+const positions = ref<number[]>([])
 onMounted(() => {
-  randomHeights.value = messages.value.map(() =>
-      Math.floor(Math.random() * 70) + 10
-  )
+  positions.value = messages.value.map(() => Math.random() * 70 + 10)
 })
 
-function getTextColor(topPercent: number) {
-  if (topPercent < 40 && topPercent > 10) {
-    return '#f0e5a2'
-  }
-  return '#ffffffb3'
-}
-
+// ✅ 메시지 추가
 function addMessage() {
-  if (newMessage.value.trim()) {
-    messages.value.push(newMessage.value.trim())
-    randomHeights.value.push(Math.floor(Math.random() * 70) + 10)
-    newMessage.value = ''
-  }
+  if (!newMessage.value.trim()) return
+  messages.value.push(newMessage.value.trim())
+  positions.value.push(Math.random() * 70 + 10)
+  newMessage.value = ''
 }
 </script>
 
 <style scoped>
-.chuseok-page {
-  font-family: 'Pretendard', sans-serif;
-  color: #f5f5f5;
-  background: radial-gradient(circle at 70% 20%, #3b2c5a, #1b152a 80%);
+/* ✅ 전체 페이지 스타일 */
+.page {
   min-height: 100vh;
+  color: #f8f8f8;
+  background: radial-gradient(circle at 60% 20%, #2e2246 0%, #120b1c 80%);
+  font-family: "Pretendard", sans-serif;
   overflow-x: hidden;
   position: relative;
 }
 
+/* ✅ 보름달 */
 .moon {
   position: absolute;
-  top: 80px;
+  top: 100px;
   right: 15%;
-  width: 200px;
-  height: 200px;
-  background: radial-gradient(circle, #fffde8 60%, #f7eeb5 85%, #e0d38f 100%);
+  width: 220px;
+  height: 220px;
   border-radius: 50%;
-  box-shadow: 0 0 40px 20px rgba(255, 255, 200, 0.3);
-  animation: pulse 6s ease-in-out infinite;
+  background: radial-gradient(circle, #fffbe6 60%, #f3e69b 85%, #d9c66d 100%);
+  box-shadow: 0 0 50px 20px rgba(255, 250, 200, 0.3);
+  animation: moonGlow 6s ease-in-out infinite;
+}
+@keyframes moonGlow {
+  0%, 100% { opacity: 0.95; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.05); }
 }
 
-@keyframes pulse {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 0.95;
-  }
-  50% {
-    transform: scale(1.05);
-    opacity: 1;
-  }
-}
-
+/* ✅ 흘러가는 메시지 */
 .floating-messages {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   overflow: hidden;
   pointer-events: none;
 }
-
-.floating-text {
+.floating {
   position: absolute;
   left: 100%;
   white-space: nowrap;
+  animation: float 25s linear infinite;
   font-size: 1rem;
-  font-weight: 500;
-  text-shadow: 0 0 6px rgba(0, 0, 0, 0.6);
-  animation: floatText 22s linear infinite;
-  pointer-events: none;
+  text-shadow: 0 0 8px rgba(0,0,0,0.6);
   opacity: 0.9;
+  color: #f5e8a3;
+}
+@keyframes float {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-120%); }
 }
 
-@keyframes floatText {
-  0% {
-    transform: translateX(100%) translateY(0);
-  }
-  50% {
-    transform: translateX(0%) translateY(3px);
-  }
-  100% {
-    transform: translateX(-120%) translateY(0);
-  }
-}
-
+/* ✅ 메인 카피 */
 .hero {
   text-align: center;
-  padding: 120px 20px 60px;
+  padding: 140px 20px 60px;
 }
-
 .hero h1 {
   font-size: 2.4rem;
   margin-bottom: 12px;
 }
-
 .hero p {
   font-size: 1.1rem;
-  color: #ffda8b;
+  color: #ffeaa7;
 }
 
+/* ✅ 섹션 */
 section {
-  max-width: 800px;
-  margin: 60px auto;
-  padding: 0 20px;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(5px);
   border-radius: 12px;
-  backdrop-filter: blur(6px);
+  margin: 60px auto;
+  padding: 30px 20px;
+  max-width: 800px;
 }
-
 section h2 {
   font-size: 1.5rem;
   border-bottom: 2px solid #f5d67c;
   padding-bottom: 6px;
   margin-bottom: 16px;
-  color: #ffe8b5;
+  color: #ffeab3;
 }
-
-ul {
+section ul {
   list-style: none;
-  padding: 0;
+  padding-left: 0;
 }
-
-li {
+section li {
   margin-bottom: 10px;
 }
 
+/* ✅ 방명록 입력 폼 */
 .guestbook form {
   display: flex;
   gap: 8px;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
-
 .guestbook input {
   flex: 1;
   padding: 10px;
   border: none;
   border-radius: 6px;
 }
-
 .guestbook button {
-  background: #f5d67c;
+  background: #f6d77c;
   border: none;
   border-radius: 6px;
   padding: 10px 16px;
@@ -245,15 +219,15 @@ li {
   font-weight: bold;
   transition: 0.3s;
 }
-
 .guestbook button:hover {
   background: #ffecb3;
 }
 
+/* ✅ 푸터 */
 footer {
   text-align: center;
-  margin: 60px 0;
+  margin: 80px 0 40px;
+  color: #ddd;
   font-size: 0.9rem;
-  color: #ccc;
 }
 </style>
