@@ -114,7 +114,7 @@ function addMessage() {
 /* ✅ 전체 페이지 스타일 */
 .page {
   min-height: 100vh;
-  color: #f8f8f8;
+  color: #111111;
   background: radial-gradient(circle at 60% 20%, #2e2246 0%, #120b1c 80%);
   font-family: "Pretendard", sans-serif;
   overflow-x: hidden;
