@@ -1,9 +1,9 @@
 name: Deploy Vite to GitHub Pages
 
-on:
-  push:
-    branches: [ main ]
-  workflow_dispatch:
+on: # 특정한 트리거 정의
+  push: # 푸쉬를 하면
+    branches: [ main ] # 메인 브랜치에 푸시될 때만 배포
+  workflow_dispatch: # 수동 실행도 가능
 
 permissions:
   contents: read
@@ -42,7 +42,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     environment:
-      name: github-pages   # ✅ GitHub Pages 환경 이름 고정 (중요)
+      name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Deploy to GitHub Pages
