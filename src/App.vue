@@ -1,235 +1,325 @@
 <template>
   <div class="page">
-    <!-- ✅ ① 보름달 배경 -->
-    <div class="background">
-      <div class="moon"></div>
-
-      <!-- ✅ ② 흘러가는 방명록 메시지 -->
-      <div class="floating-messages">
-        <span
-            v-for="(msg, i) in messages"
-            :key="i"
-            class="floating"
-            :style="{ top: `${positions[i]}%`, animationDelay: `${i * 2}s` }"
-        >
-          {{ msg }}
-        </span>
-      </div>
+    <!-- ✅ [배경-1] 배경에서 흘러가는 방명록 메시지 -->
+    <div class="floating-layer" aria-hidden="true">
+      <span
+          v-for="(msg, i) in messages"
+          :key="'bg-' + i"
+          class="floating"
+          :style="{
+          top: lanes[i] + '%',
+          animationDelay: (i * 2) + 's'
+        }"
+      >
+        {{ msg }}
+      </span>
     </div>
 
-    <!-- ✅ ③ 메인 카피 -->
+    <!-- ✅ [헤더-1] 보름달: 메인페이지 가장 위에 표시 -->
     <header class="hero">
-      <h1>🌕 한가위, 풍요와 나눔의 명절 🌾</h1>
-      <p>달빛이 가장 아름다운 날, 마음까지 둥글게 나누는 시간</p>
+      <div class="moon" aria-hidden="true"></div>
+
+      <!-- ✅ [헤더-2] 메인 카피 -->
+      <h1>한가위, 풍요와 나눔의 날</h1>
+      <p class="subtitle">달빛이 가장 둥근 날, 마음까지 둥글게</p>
     </header>
 
     <main>
-      <!-- ✅ ④ 추석 소개 -->
+      <!-- ✅ [섹션-1] 추석이란 무엇인지 간단 설명 -->
       <section>
         <h2>추석이란 무엇일까?</h2>
         <p>
-          추석은 음력 8월 15일, 한 해의 수확에 감사하고 조상에게 예를 올리는 한국의 대표 명절입니다.
-          한가위라고도 하며, 가족이 모여 송편을 빚고 서로의 안부를 전하는 따뜻한 날입니다.
+          추석은 음력 8월 15일, 한 해의 수확에 감사하고 조상에게 예를 올리는 우리나라의 대표 명절입니다.
+          가족이 모여 안부를 나누고, 송편을 빚으며, 서로의 마음을 나누는 따뜻한 날이지요.
         </p>
       </section>
 
-      <!-- ✅ ⑤ 유래 -->
+      <!-- ✅ [섹션-2] 추석의 유래/형성/현재까지 이어진 흐름 -->
       <section>
         <h2>추석의 유래</h2>
         <p>
-          추석의 기원은 신라시대 ‘가배(嘉俳)’ 풍습에서 비롯되었습니다.
-          두 편으로 나뉘어 한 달 동안 길쌈을 겨루고, 이긴 쪽이 잔치를 벌였다고 전해집니다.
-          이후 농경 사회의 풍요로운 수확 시기와 결합되어 오늘날의 추석으로 이어졌습니다.
+          추석의 기원은 신라 시대의 ‘가배(嘉俳)’ 풍습에서 비롯되었다고 전해집니다.
+          두 편으로 나뉘어 한 달 동안 길쌈을 겨루고, 승패에 따라 잔치를 베풀던 풍습이
+          농경 사회의 수확 시기와 결합되어 오늘날의 추석으로 발전했습니다.
+        </p>
+        <p>
+          현대에 와서는 차례와 성묘, 가족 모임, 전통 음식과 놀이를 통해
+          ‘감사’와 ‘나눔’의 의미를 기리며 이어지고 있습니다.
         </p>
       </section>
 
-      <!-- ✅ ⑥ 전통 음식 -->
+      <!-- ✅ [섹션-3] 전통 음식 소개 (육전, 송편 등) -->
       <section>
-        <h2>전통 음식</h2>
+        <h2>추석의 전통 음식</h2>
         <ul>
-          <li><strong>송편</strong> — 햇곡으로 만든 반달 모양의 떡으로, 가족의 소원을 담습니다.</li>
-          <li><strong>육전</strong> — 고기를 얇게 썰어 달걀옷을 입혀 부친 음식으로 명절의 별미입니다.</li>
-          <li><strong>잡채</strong> — 여러 재료를 어우러지게 볶아낸 음식으로 풍요로움을 상징합니다.</li>
+          <li>
+            <strong>송편</strong> — 햇곡으로 빚은 반달 모양의 떡.
+            가족의 소원을 담아 함께 빚고 나눠 먹습니다.
+          </li>
+          <li>
+            <strong>육전</strong> — 얇게 썬 고기에 달걀옷을 입혀 부친 명절 별미로,
+            담백한 맛과 풍성한 식감이 특징입니다.
+          </li>
+          <li>
+            <strong>잡채</strong> — 여러 채소와 당면을 어우러지게 볶아낸 음식으로
+            조화와 풍요를 상징합니다.
+          </li>
         </ul>
       </section>
 
-      <!-- ✅ ⑦ 전통 놀이 -->
+      <!-- ✅ [섹션-4] 전통 놀이 소개 (쥐불놀이, 제기차기 등) -->
       <section>
-        <h2>전통 놀이</h2>
+        <h2>추석의 전통 놀이</h2>
         <ul>
-          <li><strong>쥐불놀이</strong> — 들판의 해충을 없애며 풍년을 기원하는 불놀이.</li>
-          <li><strong>제기차기</strong> — 제기를 발로 차서 오래 띄우며 즐기는 운동 겸 놀이.</li>
+          <li>
+            <strong>쥐불놀이</strong> — 들판 해충을 없애고 풍년을 기원하며
+            불붙인 깡통을 원을 그리며 돌리던 놀이입니다.
+          </li>
+          <li>
+            <strong>제기차기</strong> — 제기를 발로 차서 오래 띄우는 놀이로,
+            남녀노소 함께 즐길 수 있는 명절 놀이입니다.
+          </li>
         </ul>
       </section>
 
-      <!-- ✅ ⑧ 방명록 -->
+      <!-- ✅ [섹션-5] 방명록: 글 남기기 + 배경에서 흘러가게 -->
       <section class="guestbook">
-        <h2>🌾 한가위 방명록</h2>
-        <form @submit.prevent="addMessage">
-          <input v-model="newMessage" placeholder="추석 인사를 남겨주세요!" required />
-          <button>남기기</button>
+        <h2>한가위 방명록</h2>
+        <form @submit.prevent="addMessage" class="form">
+          <input
+              v-model="newMessage"
+              type="text"
+              placeholder="추석 인사를 남겨주세요!"
+              required
+              aria-label="방명록 입력"
+          />
+          <button type="submit">남기기</button>
         </form>
-        <ul>
-          <li v-for="(msg, i) in messages" :key="i">{{ msg }}</li>
+
+        <!-- 참고: 화면에도 최근 메시지 목록을 노출 -->
+        <ul class="list">
+          <li v-for="(msg, i) in messages" :key="'list-' + i">{{ msg }}</li>
         </ul>
       </section>
     </main>
 
-    <!-- ✅ ⑨ 푸터 -->
-    <footer>
-      <p>© 2025 풍요로운 한가위 | 보름달처럼 밝은 하루 되세요 🌕</p>
+    <footer class="footer">
+      <p>© 2025 한가위의 마음 | 풍요로운 추석 되세요 🌕</p>
     </footer>
   </div>
 </template>
 
 <script lang="ts" setup>
+/**
+ * ✅ 체크리스트 (요구사항 충족 여부)
+ * [x] 메인 카피
+ * [x] 섹션 제목
+ * [x] 전통 음식(육전, 송편 등) 소개
+ * [x] 전통 놀이(쥐불놀이, 제기차기 등) 소개
+ * [x] 추석이 무엇인지 간단 설명
+ * [x] 추석의 유래/형성/현재까지의 흐름
+ * [x] 방문자가 글을 남길 수 있는 방명록
+ * [x] 방명록 글이 배경에서 흘러가는 애니메이션
+ * [x] 보름달이 메인페이지 가장 위에 표시
+ * [x] Vue 3 + TypeScript + Vite 호환
+ */
 import { ref, onMounted } from 'vue'
 
-// ✅ 방명록 메시지 리스트
 const messages = ref<string[]>([
-  '🌕 행복이 가득한 추석 보내세요!',
-  '🍂 가족과 함께 따뜻한 시간 보내세요!',
-  '🎑 풍요로운 보름달처럼 마음도 가득 채우세요!',
+  '보름달처럼 환한 한가위 되세요 🌕',
+  '가족과 함께 따뜻한 시간 보내세요 🎑',
+  '풍성한 수확처럼 행복이 가득하길 🍂',
 ])
 
-// ✅ 새로운 메시지 입력
 const newMessage = ref('')
 
-// ✅ 각 메시지의 랜덤 높이 위치 (겹치지 않게)
-const positions = ref<number[]>([])
+/** 배경 텍스트가 겹치지 않도록 “레인(lane)” 형태로 Y 위치 지정 */
+const lanes = ref<number[]>([])
+const LANE_MIN = 10
+const LANE_MAX = 80
+const LANE_COUNT = 6
+
+function buildLanes(n: number) {
+  const gap = (LANE_MAX - LANE_MIN) / Math.max(1, LANE_COUNT - 1)
+  // 균등 간격 + 약간의 흔들림으로 자연스러움
+  const base = Array.from({ length: LANE_COUNT }, (_, i) => LANE_MIN + i * gap)
+  const jittered = base.map(v => Math.min(LANE_MAX, Math.max(LANE_MIN, v + (Math.random() * 6 - 3))))
+  const res: number[] = []
+  for (let i = 0; i < n; i++) res.push(jittered[i % LANE_COUNT])
+  return res
+}
+
 onMounted(() => {
-  positions.value = messages.value.map(() => Math.random() * 70 + 10)
+  lanes.value = buildLanes(messages.value.length)
 })
 
-// ✅ 메시지 추가
 function addMessage() {
-  if (!newMessage.value.trim()) return
-  messages.value.push(newMessage.value.trim())
-  positions.value.push(Math.random() * 70 + 10)
+  const text = newMessage.value.trim()
+  if (!text) return
+  messages.value.push(text)
+  // 새 메시지는 다음 레인으로
+  const idx = messages.value.length - 1
+  const base = buildLanes(LANE_COUNT)
+  lanes.value.push(base[idx % LANE_COUNT])
   newMessage.value = ''
 }
 </script>
 
 <style scoped>
-/* ✅ 전체 페이지 스타일 */
+/* ===== 전체 레이아웃 ===== */
 .page {
   min-height: 100vh;
-  color: #111111;
-  background: radial-gradient(circle at 60% 20%, #2e2246 0%, #120b1c 80%);
-  font-family: "Pretendard", sans-serif;
+  color: #f7f7f7;
+  background:
+      radial-gradient(circle at 60% -10%, rgba(255,255,255,0.08), transparent 40%),
+      radial-gradient(circle at 10% 20%, rgba(255,255,255,0.06), transparent 35%),
+      linear-gradient(180deg, #190f2a 0%, #0f0b1a 60%, #0a0712 100%);
+  font-family: "Pretendard", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
   overflow-x: hidden;
   position: relative;
+  padding-bottom: 72px;
 }
 
-/* ✅ 보름달 */
-.moon {
-  position: absolute;
-  top: 100px;
-  right: 15%;
-  width: 220px;
-  height: 220px;
-  border-radius: 50%;
-  background: radial-gradient(circle, #fffbe6 60%, #f3e69b 85%, #d9c66d 100%);
-  box-shadow: 0 0 50px 20px rgba(255, 250, 200, 0.3);
-  animation: moonGlow 6s ease-in-out infinite;
-  z-index: 0;
-}
-@keyframes moonGlow {
-  0%, 100% { opacity: 0.95; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.05); }
-}
-
-/* ✅ 흘러가는 메시지 */
-.floating-messages {
-  position: absolute;
+/* ===== 배경으로 흘러가는 텍스트 ===== */
+.floating-layer {
+  position: fixed; /* 화면 전체에 고정 */
   inset: 0;
-  overflow: hidden;
   pointer-events: none;
-  z-index: 2;
+  z-index: 1; /* 배경(문 아래), 본문보다는 아래 */
+  opacity: 0.9;
 }
 .floating {
   position: absolute;
   left: 100%;
   white-space: nowrap;
-  animation: float 25s linear infinite;
-  font-size: 1rem;
+  font-size: 0.95rem;
+  color: rgba(255, 240, 200, 0.85);
   text-shadow: 0 0 8px rgba(0,0,0,0.6);
-  opacity: 0.9;
-  color: #f5e8a3;
+  animation: float-left 24s linear infinite;
 }
-@keyframes float {
-  0% { transform: translateX(100%); }
-  100% { transform: translateX(-120%); }
+@keyframes float-left {
+  0%   { transform: translateX(100%);   opacity: 0.9; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { transform: translateX(-130%); opacity: 0.9; }
 }
 
-/* ✅ 메인 카피 */
+/* ===== 헤더/보름달/카피 ===== */
 .hero {
+  position: relative;
+  z-index: 2; /* 배경 텍스트 위에 표시 */
+  padding: 56px 20px 24px;
   text-align: center;
-  padding: 140px 20px 60px;
+}
+.moon {
+  width: 240px;
+  height: 240px;
+  margin: 24px auto 20px;
+  border-radius: 50%;
+  background:
+      radial-gradient(circle at 45% 40%, #fffbe9 0%, #fff3b8 55%, #edd787 80%, #d9c06e 100%);
+  box-shadow:
+      0 0 32px 8px rgba(255, 245, 200, 0.3),
+      0 0 120px 40px rgba(255, 245, 200, 0.08);
+  animation: moon-pulse 7s ease-in-out infinite;
+}
+@keyframes moon-pulse {
+  0%, 100% { transform: scale(1);   opacity: 0.96; }
+  50%      { transform: scale(1.04); opacity: 1; }
 }
 .hero h1 {
-  font-size: 2.4rem;
-  margin-bottom: 12px;
+  font-size: 2.35rem;
+  margin: 6px 0 6px;
+  letter-spacing: 0.2px;
 }
-.hero p {
-  font-size: 1.1rem;
-  color: #ffeaa7;
+.subtitle {
+  color: #ffe8a8;
+  opacity: 0.95;
 }
 
-/* ✅ 섹션 */
+/* ===== 공통 섹션 ===== */
+main {
+  position: relative;
+  z-index: 3; /* 본문은 배경 텍스트보다 위 */
+}
 section {
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(5px);
-  border-radius: 12px;
-  margin: 60px auto;
-  padding: 30px 20px;
-  max-width: 800px;
+  max-width: 860px;
+  margin: 28px auto;
+  padding: 24px 20px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 section h2 {
-  font-size: 1.5rem;
-  border-bottom: 2px solid #f5d67c;
+  font-size: 1.4rem;
+  margin-bottom: 12px;
+  color: #ffe7a1;
+  border-bottom: 2px solid rgba(255, 231, 161, 0.35);
   padding-bottom: 6px;
-  margin-bottom: 16px;
-  color: #ffeab3;
 }
 section ul {
   list-style: none;
   padding-left: 0;
 }
 section li {
-  margin-bottom: 10px;
+  margin: 10px 0;
+  line-height: 1.7;
 }
 
-/* ✅ 방명록 입력 폼 */
-.guestbook form {
+/* ===== 방명록 ===== */
+.guestbook .form {
   display: flex;
-  gap: 8px;
-  margin-bottom: 20px;
+  gap: 10px;
+  margin: 14px 0 16px;
 }
 .guestbook input {
   flex: 1;
-  padding: 10px;
-  border: none;
-  border-radius: 6px;
+  padding: 11px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  outline: none;
+}
+.guestbook input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
 }
 .guestbook button {
-  background: #f6d77c;
+  padding: 11px 16px;
   border: none;
-  border-radius: 6px;
-  padding: 10px 16px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #f2d37a, #ffd98f);
+  color: #2a1f42;
+  font-weight: 700;
   cursor: pointer;
-  font-weight: bold;
-  transition: 0.3s;
+  transition: transform 0.15s ease, filter 0.15s ease;
 }
 .guestbook button:hover {
-  background: #ffecb3;
+  transform: translateY(-1px);
+  filter: brightness(1.05);
+}
+.guestbook .list {
+  margin-top: 10px;
+  display: grid;
+  gap: 8px;
+}
+.guestbook .list li {
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  line-height: 1.6;
 }
 
-/* ✅ 푸터 */
-footer {
+/* ===== 푸터 ===== */
+.footer {
+  position: relative;
+  z-index: 3;
   text-align: center;
-  margin: 80px 0 40px;
-  color: #ddd;
-  font-size: 0.9rem;
+  margin: 36px 0 12px;
+  color: #e6e2f0;
+  opacity: 0.9;
+  font-size: 0.92rem;
 }
 </style>
