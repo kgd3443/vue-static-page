@@ -1,28 +1,30 @@
 <template>
   <div class="page">
-    <!-- 배경 레이어: 방명록 문구가 흘러감 -->
+    <!-- ✅ [배경-1] 흘러가는 방명록 메시지 (배경) -->
     <div class="floating-layer" aria-hidden="true">
       <span
           v-for="(msg, i) in messages"
           :key="'bg-' + i"
           class="floating"
-          :style="{
-          top: getLane(i) + '%',
-          animationDelay: (i * 2) + 's'
-        }"
+          :style="{ top: getLane(i) + '%', animationDelay: (i * 2) + 's' }"
       >
         {{ msg }}
       </span>
     </div>
 
-    <!-- 메인 헤더: 보름달을 가장 위에 -->
+    <!-- ✅ [배경-2] 보름달 (상단 고정, 세련된 스타일) -->
+    <div class="moon-layer" aria-hidden="true">
+      <div class="moon"></div>
+    </div>
+
+    <!-- ✅ [헤더-1] 메인 카피 -->
     <header class="hero">
-      <div class="moon" aria-hidden="true"></div>
       <h1>한가위, 풍요와 나눔의 날</h1>
       <p class="subtitle">달빛이 가장 둥근 날, 마음까지 둥글게</p>
     </header>
 
     <main>
+      <!-- ✅ [섹션-1] 추석이 무엇인지 간단 설명 -->
       <section>
         <h2>추석이란 무엇일까?</h2>
         <p>
@@ -31,6 +33,7 @@
         </p>
       </section>
 
+      <!-- ✅ [섹션-2] 추석의 유래와 현재까지의 흐름 -->
       <section>
         <h2>추석의 유래</h2>
         <p>
@@ -44,38 +47,36 @@
         </p>
       </section>
 
+      <!-- ✅ [섹션-3] 전통 음식 소개 (육전, 송편 등) -->
       <section>
         <h2>추석의 전통 음식</h2>
         <ul>
           <li>
-            <strong>송편</strong> — 햇곡으로 빚은 반달 모양의 떡.
-            가족의 소원을 담아 함께 빚고 나눠 먹습니다.
+            <strong>송편</strong> — 햇곡으로 빚은 반달 모양의 떡으로, 가족의 소원을 담아 함께 빚고 나눠 먹습니다.
           </li>
           <li>
-            <strong>육전</strong> — 얇게 썬 고기에 달걀옷을 입혀 부친 명절 별미로,
-            담백한 맛과 풍성한 식감이 특징입니다.
+            <strong>육전</strong> — 얇게 저민 고기에 달걀옷을 입혀 부친 명절 별미로, 담백한 맛과 풍성한 식감이 특징입니다.
           </li>
           <li>
-            <strong>잡채</strong> — 여러 채소와 당면을 어우러지게 볶아낸 음식으로
-            조화와 풍요를 상징합니다.
+            <strong>잡채</strong> — 여러 채소와 당면을 어우러지게 볶아낸 음식으로, 조화와 풍요를 상징합니다.
           </li>
         </ul>
       </section>
 
+      <!-- ✅ [섹션-4] 전통 놀이 소개 (쥐불놀이, 제기차기 등) -->
       <section>
         <h2>추석의 전통 놀이</h2>
         <ul>
           <li>
-            <strong>쥐불놀이</strong> — 들판 해충을 없애고 풍년을 기원하며
-            불붙인 깡통을 원을 그리며 돌리던 놀이입니다.
+            <strong>쥐불놀이</strong> — 들판의 해충을 없애고 풍년을 기원하며, 불붙인 깡통을 원을 그리며 돌리던 놀이입니다.
           </li>
           <li>
-            <strong>제기차기</strong> — 제기를 발로 차서 오래 띄우는 놀이로,
-            남녀노소 함께 즐길 수 있는 명절 놀이입니다.
+            <strong>제기차기</strong> — 제기를 발로 차서 오래 띄우는 놀이로, 남녀노소 함께 즐길 수 있는 명절 놀이입니다.
           </li>
         </ul>
       </section>
 
+      <!-- ✅ [섹션-5] 방명록: 글 남기기 + 배경에서 흘러가게 -->
       <section class="guestbook">
         <h2>한가위 방명록</h2>
         <form @submit.prevent="addMessage" class="form">
@@ -89,6 +90,7 @@
           <button type="submit">남기기</button>
         </form>
 
+        <!-- 최근 메시지 가독성 표시(배경과 별개) -->
         <ul class="list">
           <li v-for="(msg, i) in messages" :key="'list-' + i">{{ msg }}</li>
         </ul>
@@ -102,19 +104,33 @@
 </template>
 
 <script lang="ts" setup>
+/**
+ * ✅ 체크리스트 (요구사항 충족)
+ * [x] 메인 카피
+ * [x] 섹션 제목
+ * [x] 전통 음식(육전, 송편 등) 소개
+ * [x] 전통 놀이(쥐불놀이, 제기차기 등) 소개
+ * [x] 추석이 무엇인지 간단한 설명
+ * [x] 추석이 어떻게 시작되어 현재까지 이어졌는지(유래) 서술
+ * [x] 방문자가 글을 남길 수 있는 방명록
+ * [x] 방명록 글이 배경에서 흘러가는 애니메이션
+ * [x] 페이지 배경에 보름달 포함 (엣지/세련된 느낌)
+ * [x] Vue 3 + TypeScript + Vite 호환
+ */
 import { ref, onMounted } from 'vue'
 
+/** 배경 메시지들(초기 샘플) */
 const messages = ref<string[]>([
   '보름달처럼 환한 한가위 되세요 🌕',
   '가족과 함께 따뜻한 시간 보내세요 🎑',
   '풍성한 수확처럼 행복이 가득하길 🍂',
 ])
 
+/** 입력값 */
 const newMessage = ref<string>('')
 
-/** 배경 텍스트의 Y위치를 위한 “레인” 값들(%) */
+/** 배경 메시지 Y 위치용 레인(%) — 안전한 number 반환을 위해 헬퍼 사용 */
 const lanes = ref<number[]>([])
-
 const LANE_MIN = 10
 const LANE_MAX = 80
 const LANE_COUNT = 6
@@ -122,45 +138,46 @@ const LANE_COUNT = 6
 const clamp = (v: number, lo: number, hi: number): number =>
     Math.min(hi, Math.max(lo, v))
 
-/** 균등하게 분포된 레인(약간의 지터 포함) 생성 */
+/** 균등 분포 + 약간의 지터(흔들림)로 자연스러운 레인 생성 */
 function buildLaneSet(count: number): number[] {
   const gap = (LANE_MAX - LANE_MIN) / Math.max(1, LANE_COUNT - 1)
   const base = Array.from({ length: LANE_COUNT }, (_, i) => LANE_MIN + i * gap)
   const jittered = base.map(v => clamp(v + (Math.random() * 6 - 3), LANE_MIN, LANE_MAX))
   const out: number[] = []
-  for (let i = 0; i < count; i++) {
-    out.push(jittered[i % LANE_COUNT])
-  }
+  for (let i = 0; i < count; i++) out.push(jittered[i % LANE_COUNT])
   return out
 }
 
-/** i번째 메시지가 사용할 안전한 레인 값(항상 number 반환) */
+/** i번째 메시지의 레인 값을 항상 number로 반환 */
 function getLane(i: number): number {
   const arr = lanes.value
-  if (arr.length === 0) return 50
+  if (!arr.length) return 50
   const lane = arr[i % arr.length]
   return typeof lane === 'number' ? lane : 50
 }
 
+/** 초기 레인 생성 */
 onMounted(() => {
   lanes.value = buildLaneSet(messages.value.length)
 })
 
+/** 방명록 메시지 추가 + 새 레인 보장 */
 function addMessage(): void {
   const text = newMessage.value.trim()
   if (!text) return
   messages.value.push(text)
 
-  // 새 메시지용 레인 추가 (항상 number 보장)
-  const arrLen = lanes.value.length > 0 ? lanes.value.length : 1
-  const base = buildLaneSet(arrLen)
-  const next = base[(messages.value.length - 1) % arrLen]
+  const len = Math.max(1, lanes.value.length)
+  const base = buildLaneSet(len)
+  const next = base[(messages.value.length - 1) % len]
   lanes.value.push(next)
+
   newMessage.value = ''
 }
 </script>
 
 <style scoped>
+/* ===== 페이지 베이스 ===== */
 .page {
   min-height: 100vh;
   color: #f7f7f7;
@@ -174,20 +191,20 @@ function addMessage(): void {
   padding-bottom: 72px;
 }
 
-/* 배경 흐르는 텍스트 (고정) */
+/* ===== 배경: 흘러가는 텍스트 ===== */
 .floating-layer {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  z-index: 1;
-  opacity: 0.9;
+  z-index: 1; /* 배경 레벨 */
+  opacity: 0.92;
 }
 .floating {
   position: absolute;
   left: 100%;
   white-space: nowrap;
   font-size: 0.95rem;
-  color: rgba(255, 240, 200, 0.85);
+  color: rgba(255, 240, 200, 0.86);
   text-shadow: 0 0 8px rgba(0,0,0,0.6);
   animation: float-left 24s linear infinite;
 }
@@ -198,17 +215,19 @@ function addMessage(): void {
   100% { transform: translateX(-130%); opacity: 0.9; }
 }
 
-/* 헤더/보름달 */
-.hero {
-  position: relative;
-  z-index: 2;
-  padding: 56px 20px 24px;
-  text-align: center;
+/* ===== 배경: 보름달 ===== */
+.moon-layer {
+  position: fixed;
+  inset: 0 0 auto 0;
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+  z-index: 2; /* 텍스트(본문)보다 아래, 배경문자보다 위 */
+  pointer-events: none;
 }
 .moon {
   width: 240px;
   height: 240px;
-  margin: 24px auto 20px;
   border-radius: 50%;
   background:
       radial-gradient(circle at 45% 40%, #fffbe9 0%, #fff3b8 55%, #edd787 80%, #d9c06e 100%);
@@ -221,9 +240,17 @@ function addMessage(): void {
   0%, 100% { transform: scale(1);   opacity: 0.96; }
   50%      { transform: scale(1.04); opacity: 1; }
 }
+
+/* ===== 헤더(메인 카피) ===== */
+.hero {
+  position: relative;
+  z-index: 3; /* 본문/헤더는 배경 위 */
+  text-align: center;
+  padding: 160px 20px 40px; /* 보름달 아래로 여백 */
+}
 .hero h1 {
-  font-size: 2.35rem;
-  margin: 6px 0 6px;
+  font-size: 2.4rem;
+  margin: 4px 0 6px;
   letter-spacing: 0.2px;
 }
 .subtitle {
@@ -231,7 +258,7 @@ function addMessage(): void {
   opacity: 0.95;
 }
 
-/* 본문 섹션 */
+/* ===== 섹션 카드 ===== */
 main { position: relative; z-index: 3; }
 section {
   max-width: 860px;
@@ -252,7 +279,7 @@ section h2 {
 section ul { list-style: none; padding-left: 0; }
 section li { margin: 10px 0; line-height: 1.7; }
 
-/* 방명록 */
+/* ===== 방명록 ===== */
 .guestbook .form {
   display: flex;
   gap: 10px;
@@ -292,7 +319,7 @@ section li { margin: 10px 0; line-height: 1.7; }
   line-height: 1.6;
 }
 
-/* 푸터 */
+/* ===== 푸터 ===== */
 .footer {
   position: relative;
   z-index: 3;
