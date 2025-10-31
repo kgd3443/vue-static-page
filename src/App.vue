@@ -1,6 +1,6 @@
 <template>
   <div class="page">
-    <!-- ✅ [배경-1] 흘러가는 방명록 메시지 (배경) -->
+    <!-- ✅ [배경-1] 흘러가는 방명록 메시지 -->
     <div class="floating-layer" aria-hidden="true">
       <span
           v-for="(msg, i) in messages"
@@ -12,7 +12,7 @@
       </span>
     </div>
 
-    <!-- ✅ [배경-2] 보름달 (상단 고정, 세련된 스타일) -->
+    <!-- ✅ [배경-2] 보름달 -->
     <div class="moon-layer" aria-hidden="true">
       <div class="moon"></div>
     </div>
@@ -90,7 +90,6 @@
           <button type="submit">남기기</button>
         </form>
 
-        <!-- 최근 메시지 가독성 표시(배경과 별개) -->
         <ul class="list">
           <li v-for="(msg, i) in messages" :key="'list-' + i">{{ msg }}</li>
         </ul>
@@ -105,74 +104,56 @@
 
 <script lang="ts" setup>
 /**
- * ✅ 체크리스트 (요구사항 충족)
+ * ✅ 체크리스트
  * [x] 메인 카피
  * [x] 섹션 제목
  * [x] 전통 음식(육전, 송편 등) 소개
  * [x] 전통 놀이(쥐불놀이, 제기차기 등) 소개
- * [x] 추석이 무엇인지 간단한 설명
- * [x] 추석이 어떻게 시작되어 현재까지 이어졌는지(유래) 서술
- * [x] 방문자가 글을 남길 수 있는 방명록
- * [x] 방명록 글이 배경에서 흘러가는 애니메이션
- * [x] 페이지 배경에 보름달 포함 (엣지/세련된 느낌)
- * [x] Vue 3 + TypeScript + Vite 호환
+ * [x] 추석이 무엇인지 간단 설명
+ * [x] 추석의 유래/현재까지의 흐름
+ * [x] 방문자 방명록 입력
+ * [x] 방명록 글 배경 흐름 애니메이션
+ * [x] 보름달 배경 (엣지/세련)
+ * [x] TS 타입 안전 (number | undefined 제거)
  */
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 
-/** 배경 메시지들(초기 샘플) */
 const messages = ref<string[]>([
   '보름달처럼 환한 한가위 되세요 🌕',
   '가족과 함께 따뜻한 시간 보내세요 🎑',
   '풍성한 수확처럼 행복이 가득하길 🍂',
 ])
 
-/** 입력값 */
 const newMessage = ref<string>('')
 
-/** 배경 메시지 Y 위치용 레인(%) — 안전한 number 반환을 위해 헬퍼 사용 */
-const lanes = ref<number[]>([])
-const LANE_MIN = 10
-const LANE_MAX = 80
-const LANE_COUNT = 6
-
-const clamp = (v: number, lo: number, hi: number): number =>
-    Math.min(hi, Math.max(lo, v))
-
-/** 균등 분포 + 약간의 지터(흔들림)로 자연스러운 레인 생성 */
-function buildLaneSet(count: number): number[] {
-  const gap = (LANE_MAX - LANE_MIN) / Math.max(1, LANE_COUNT - 1)
-  const base = Array.from({ length: LANE_COUNT }, (_, i) => LANE_MIN + i * gap)
-  const jittered = base.map(v => clamp(v + (Math.random() * 6 - 3), LANE_MIN, LANE_MAX))
-  const out: number[] = []
-  for (let i = 0; i < count; i++) out.push(jittered[i % LANE_COUNT])
-  return out
-}
-
-/** i번째 메시지의 레인 값을 항상 number로 반환 */
-function getLane(i: number): number {
-  const arr = lanes.value
-  if (!arr.length) return 50
-  const lane = arr[i % arr.length]
-  return typeof lane === 'number' ? lane : 50
-}
-
-/** 초기 레인 생성 */
-onMounted(() => {
-  lanes.value = buildLaneSet(messages.value.length)
-})
-
-/** 방명록 메시지 추가 + 새 레인 보장 */
 function addMessage(): void {
   const text = newMessage.value.trim()
   if (!text) return
   messages.value.push(text)
-
-  const len = Math.max(1, lanes.value.length)
-  const base = buildLaneSet(len)
-  const next = base[(messages.value.length - 1) % len]
-  lanes.value.push(next)
-
   newMessage.value = ''
+}
+
+/** ===== 배경 텍스트 레인 계산(인덱스 기반: 항상 number 반환) ===== */
+const LANE_MIN = 10
+const LANE_MAX = 80
+const LANE_COUNT = 6
+
+const clamp = (v: number, lo: number, hi: number): number => Math.min(hi, Math.max(lo, v))
+
+/** 간단한 시드 기반 난수(결정론적 지터) */
+function jitter(i: number): number {
+  // 0 ~ 1 사이
+  const x = (Math.sin(i * 12.9898 + 78.233) * 43758.5453) % 1
+  const frac = x - Math.floor(x)
+  return (frac * 6) - 3 // -3 ~ +3
+}
+
+/** i번째 메시지의 Y% 위치를 계산 (배열 접근 없이 항상 number) */
+function getLane(i: number): number {
+  const gap = (LANE_MAX - LANE_MIN) / Math.max(1, LANE_COUNT - 1)
+  const laneIndex = i % LANE_COUNT
+  const base = LANE_MIN + laneIndex * gap
+  return clamp(base + jitter(i), LANE_MIN, LANE_MAX)
 }
 </script>
 
@@ -196,7 +177,7 @@ function addMessage(): void {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  z-index: 1; /* 배경 레벨 */
+  z-index: 1;
   opacity: 0.92;
 }
 .floating {
@@ -222,7 +203,7 @@ function addMessage(): void {
   display: flex;
   justify-content: center;
   margin-top: 24px;
-  z-index: 2; /* 텍스트(본문)보다 아래, 배경문자보다 위 */
+  z-index: 2;
   pointer-events: none;
 }
 .moon {
@@ -244,9 +225,9 @@ function addMessage(): void {
 /* ===== 헤더(메인 카피) ===== */
 .hero {
   position: relative;
-  z-index: 3; /* 본문/헤더는 배경 위 */
+  z-index: 3;
   text-align: center;
-  padding: 160px 20px 40px; /* 보름달 아래로 여백 */
+  padding: 160px 20px 40px;
 }
 .hero h1 {
   font-size: 2.4rem;
