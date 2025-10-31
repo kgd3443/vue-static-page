@@ -132,6 +132,7 @@ function addMessage() {
   background: radial-gradient(circle, #fffbe6 60%, #f3e69b 85%, #d9c66d 100%);
   box-shadow: 0 0 50px 20px rgba(255, 250, 200, 0.3);
   animation: moonGlow 6s ease-in-out infinite;
+  z-index: 0;
 }
 @keyframes moonGlow {
   0%, 100% { opacity: 0.95; transform: scale(1); }
@@ -144,6 +145,7 @@ function addMessage() {
   inset: 0;
   overflow: hidden;
   pointer-events: none;
+  z-index: 2;
 }
 .floating {
   position: absolute;
