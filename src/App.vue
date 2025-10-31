@@ -1,13 +1,13 @@
 <template>
   <div class="page">
-    <!-- ✅ [배경-1] 배경에서 흘러가는 방명록 메시지 -->
+    <!-- 배경 레이어: 방명록 문구가 흘러감 -->
     <div class="floating-layer" aria-hidden="true">
       <span
           v-for="(msg, i) in messages"
           :key="'bg-' + i"
           class="floating"
           :style="{
-          top: lanes[i] + '%',
+          top: getLane(i) + '%',
           animationDelay: (i * 2) + 's'
         }"
       >
@@ -15,17 +15,14 @@
       </span>
     </div>
 
-    <!-- ✅ [헤더-1] 보름달: 메인페이지 가장 위에 표시 -->
+    <!-- 메인 헤더: 보름달을 가장 위에 -->
     <header class="hero">
       <div class="moon" aria-hidden="true"></div>
-
-      <!-- ✅ [헤더-2] 메인 카피 -->
       <h1>한가위, 풍요와 나눔의 날</h1>
       <p class="subtitle">달빛이 가장 둥근 날, 마음까지 둥글게</p>
     </header>
 
     <main>
-      <!-- ✅ [섹션-1] 추석이란 무엇인지 간단 설명 -->
       <section>
         <h2>추석이란 무엇일까?</h2>
         <p>
@@ -34,7 +31,6 @@
         </p>
       </section>
 
-      <!-- ✅ [섹션-2] 추석의 유래/형성/현재까지 이어진 흐름 -->
       <section>
         <h2>추석의 유래</h2>
         <p>
@@ -48,7 +44,6 @@
         </p>
       </section>
 
-      <!-- ✅ [섹션-3] 전통 음식 소개 (육전, 송편 등) -->
       <section>
         <h2>추석의 전통 음식</h2>
         <ul>
@@ -67,7 +62,6 @@
         </ul>
       </section>
 
-      <!-- ✅ [섹션-4] 전통 놀이 소개 (쥐불놀이, 제기차기 등) -->
       <section>
         <h2>추석의 전통 놀이</h2>
         <ul>
@@ -82,7 +76,6 @@
         </ul>
       </section>
 
-      <!-- ✅ [섹션-5] 방명록: 글 남기기 + 배경에서 흘러가게 -->
       <section class="guestbook">
         <h2>한가위 방명록</h2>
         <form @submit.prevent="addMessage" class="form">
@@ -96,7 +89,6 @@
           <button type="submit">남기기</button>
         </form>
 
-        <!-- 참고: 화면에도 최근 메시지 목록을 노출 -->
         <ul class="list">
           <li v-for="(msg, i) in messages" :key="'list-' + i">{{ msg }}</li>
         </ul>
@@ -110,19 +102,6 @@
 </template>
 
 <script lang="ts" setup>
-/**
- * ✅ 체크리스트 (요구사항 충족 여부)
- * [x] 메인 카피
- * [x] 섹션 제목
- * [x] 전통 음식(육전, 송편 등) 소개
- * [x] 전통 놀이(쥐불놀이, 제기차기 등) 소개
- * [x] 추석이 무엇인지 간단 설명
- * [x] 추석의 유래/형성/현재까지의 흐름
- * [x] 방문자가 글을 남길 수 있는 방명록
- * [x] 방명록 글이 배경에서 흘러가는 애니메이션
- * [x] 보름달이 메인페이지 가장 위에 표시
- * [x] Vue 3 + TypeScript + Vite 호환
- */
 import { ref, onMounted } from 'vue'
 
 const messages = ref<string[]>([
@@ -131,42 +110,57 @@ const messages = ref<string[]>([
   '풍성한 수확처럼 행복이 가득하길 🍂',
 ])
 
-const newMessage = ref('')
+const newMessage = ref<string>('')
 
-/** 배경 텍스트가 겹치지 않도록 “레인(lane)” 형태로 Y 위치 지정 */
+/** 배경 텍스트의 Y위치를 위한 “레인” 값들(%) */
 const lanes = ref<number[]>([])
+
 const LANE_MIN = 10
 const LANE_MAX = 80
 const LANE_COUNT = 6
 
-function buildLanes(n: number) {
+const clamp = (v: number, lo: number, hi: number): number =>
+    Math.min(hi, Math.max(lo, v))
+
+/** 균등하게 분포된 레인(약간의 지터 포함) 생성 */
+function buildLaneSet(count: number): number[] {
   const gap = (LANE_MAX - LANE_MIN) / Math.max(1, LANE_COUNT - 1)
-  // 균등 간격 + 약간의 흔들림으로 자연스러움
   const base = Array.from({ length: LANE_COUNT }, (_, i) => LANE_MIN + i * gap)
-  const jittered = base.map(v => Math.min(LANE_MAX, Math.max(LANE_MIN, v + (Math.random() * 6 - 3))))
-  const res: number[] = []
-  for (let i = 0; i < n; i++) res.push(jittered[i % LANE_COUNT])
-  return res
+  const jittered = base.map(v => clamp(v + (Math.random() * 6 - 3), LANE_MIN, LANE_MAX))
+  const out: number[] = []
+  for (let i = 0; i < count; i++) {
+    out.push(jittered[i % LANE_COUNT])
+  }
+  return out
+}
+
+/** i번째 메시지가 사용할 안전한 레인 값(항상 number 반환) */
+function getLane(i: number): number {
+  const arr = lanes.value
+  if (arr.length === 0) return 50
+  const lane = arr[i % arr.length]
+  return typeof lane === 'number' ? lane : 50
 }
 
 onMounted(() => {
-  lanes.value = buildLanes(messages.value.length)
+  lanes.value = buildLaneSet(messages.value.length)
 })
 
-function addMessage() {
+function addMessage(): void {
   const text = newMessage.value.trim()
   if (!text) return
   messages.value.push(text)
-  // 새 메시지는 다음 레인으로
-  const idx = messages.value.length - 1
-  const base = buildLanes(LANE_COUNT)
-  lanes.value.push(base[idx % LANE_COUNT])
+
+  // 새 메시지용 레인 추가 (항상 number 보장)
+  const arrLen = lanes.value.length > 0 ? lanes.value.length : 1
+  const base = buildLaneSet(arrLen)
+  const next = base[(messages.value.length - 1) % arrLen]
+  lanes.value.push(next)
   newMessage.value = ''
 }
 </script>
 
 <style scoped>
-/* ===== 전체 레이아웃 ===== */
 .page {
   min-height: 100vh;
   color: #f7f7f7;
@@ -180,12 +174,12 @@ function addMessage() {
   padding-bottom: 72px;
 }
 
-/* ===== 배경으로 흘러가는 텍스트 ===== */
+/* 배경 흐르는 텍스트 (고정) */
 .floating-layer {
-  position: fixed; /* 화면 전체에 고정 */
+  position: fixed;
   inset: 0;
   pointer-events: none;
-  z-index: 1; /* 배경(문 아래), 본문보다는 아래 */
+  z-index: 1;
   opacity: 0.9;
 }
 .floating {
@@ -204,10 +198,10 @@ function addMessage() {
   100% { transform: translateX(-130%); opacity: 0.9; }
 }
 
-/* ===== 헤더/보름달/카피 ===== */
+/* 헤더/보름달 */
 .hero {
   position: relative;
-  z-index: 2; /* 배경 텍스트 위에 표시 */
+  z-index: 2;
   padding: 56px 20px 24px;
   text-align: center;
 }
@@ -237,11 +231,8 @@ function addMessage() {
   opacity: 0.95;
 }
 
-/* ===== 공통 섹션 ===== */
-main {
-  position: relative;
-  z-index: 3; /* 본문은 배경 텍스트보다 위 */
-}
+/* 본문 섹션 */
+main { position: relative; z-index: 3; }
 section {
   max-width: 860px;
   margin: 28px auto;
@@ -258,16 +249,10 @@ section h2 {
   border-bottom: 2px solid rgba(255, 231, 161, 0.35);
   padding-bottom: 6px;
 }
-section ul {
-  list-style: none;
-  padding-left: 0;
-}
-section li {
-  margin: 10px 0;
-  line-height: 1.7;
-}
+section ul { list-style: none; padding-left: 0; }
+section li { margin: 10px 0; line-height: 1.7; }
 
-/* ===== 방명록 ===== */
+/* 방명록 */
 .guestbook .form {
   display: flex;
   gap: 10px;
@@ -282,9 +267,7 @@ section li {
   color: #fff;
   outline: none;
 }
-.guestbook input::placeholder {
-  color: rgba(255, 255, 255, 0.7);
-}
+.guestbook input::placeholder { color: rgba(255, 255, 255, 0.7); }
 .guestbook button {
   padding: 11px 16px;
   border: none;
@@ -295,10 +278,7 @@ section li {
   cursor: pointer;
   transition: transform 0.15s ease, filter 0.15s ease;
 }
-.guestbook button:hover {
-  transform: translateY(-1px);
-  filter: brightness(1.05);
-}
+.guestbook button:hover { transform: translateY(-1px); filter: brightness(1.05); }
 .guestbook .list {
   margin-top: 10px;
   display: grid;
@@ -312,7 +292,7 @@ section li {
   line-height: 1.6;
 }
 
-/* ===== 푸터 ===== */
+/* 푸터 */
 .footer {
   position: relative;
   z-index: 3;
